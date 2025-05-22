@@ -1,7 +1,4 @@
-
-import React, { useState } from 'react';
-const [ilaclar, setIlaclar] = useState([]);
-const [ilacOneri, setIlacOneri] = useState([]);
+import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://jwdxnueyqwoqrshzuvrs.supabase.co';
@@ -18,27 +15,33 @@ export default function SGKEczaciAsistani() {
   const [icd10, setIcd10] = useState('');
   const [rapor, setRapor] = useState('Raporlu');
   const [sonuc, setSonuc] = useState('');
-useEffect(() => {
-  const fetchIlaclar = async () => {
-    const { data, error } = await supabase.from('ilaclar').select('*');
-    if (error) {
-      console.error('İlaçlar alınamadı:', error.message);
-    } else {
-      setIlaclar(data);
-    }
-  };
 
-  fetchIlaclar();
-}, []);
+  const [ilaclar, setIlaclar] = useState([]);
+  const [ilacOneri, setIlacOneri] = useState([]);
+
   useEffect(() => {
-  if (ilac.length >= 2) {
-    const filtreli = ilaclar.filter(i => i.ilac_adi.toLowerCase().includes(ilac.toLowerCase()));
-    setIlacOneri(filtreli);
-  } else {
-    setIlacOneri([]);
-  }
-}, [ilac, ilaclar]);
-  
+    const fetchIlaclar = async () => {
+      const { data, error } = await supabase.from('ilaclar').select('*');
+      if (error) {
+        console.error('İlaçlar alınamadı:', error.message);
+      } else {
+        setIlaclar(data);
+      }
+    };
+    fetchIlaclar();
+  }, []);
+
+  useEffect(() => {
+    if (ilac.length >= 2) {
+      const filtreli = ilaclar.filter(i =>
+        i.ilac_adi.toLowerCase().includes(ilac.toLowerCase())
+      );
+      setIlacOneri(filtreli);
+    } else {
+      setIlacOneri([]);
+    }
+  }, [ilac, ilaclar]);
+
   const girisYap = async () => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password: sifre });
     if (error) setMesaj('❌ Giriş başarısız: ' + error.message);
@@ -75,26 +78,26 @@ useEffect(() => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <h1 className="text-2xl font-bold mb-4">SGK İlaç Sorgulama Paneli</h1>
-      <div className="max-w-xl space-y-4">
+      <div className="max-w-xl space-y-4 relative">
         <div>
           <label className="block mb-1 font-medium">İlaç Adı / Barkod</label>
           <input value={ilac} onChange={(e) => setIlac(e.target.value)} placeholder="Parol / 869..." className="border p-2 w-full" />
-    {ilacOneri.length > 0 && (
-  <ul className="border bg-white absolute z-10 w-full max-h-40 overflow-auto mt-1 rounded shadow">
-    {ilacOneri.map(i => (
-      <li
-        key={i.id}
-        onClick={() => {
-          setIlac(i.ilac_adi);
-          setIlacOneri([]);
-        }}
-        className="p-2 hover:bg-blue-100 cursor-pointer"
-      >
-        {i.ilac_adi}
-      </li>
-    ))}
-  </ul>
-)}
+          {ilacOneri.length > 0 && (
+            <ul className="border bg-white absolute z-10 w-full max-h-40 overflow-auto mt-1 rounded shadow">
+              {ilacOneri.map(i => (
+                <li
+                  key={i.id}
+                  onClick={() => {
+                    setIlac(i.ilac_adi);
+                    setIlacOneri([]);
+                  }}
+                  className="p-2 hover:bg-blue-100 cursor-pointer"
+                >
+                  {i.ilac_adi}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <div>
           <label className="block mb-1 font-medium">Tanı Kodu (ICD-10)</label>
