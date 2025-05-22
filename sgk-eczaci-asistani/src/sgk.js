@@ -1,4 +1,4 @@
-// SGK Eczacı Asistanı – Otomatik İlaç ve Tanı Kod Tamamlama
+// SGK Eczacı Asistanı – Otomatik İlaç ve Tanı Kod Tamamlama (DÜZENLENMİŞ)
 
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
@@ -24,8 +24,7 @@ export default function SGKEczaciAsistani() {
   useEffect(() => {
     const fetchIlaclar = async () => {
       const { data, error } = await supabase.from('ilaclar').select('*');
-      if (error) console.error('İlaçlar alınamadı:', error.message);
-      else setIlaclar(data);
+      if (!error) setIlaclar(data);
     };
     fetchIlaclar();
   }, []);
@@ -33,8 +32,7 @@ export default function SGKEczaciAsistani() {
   useEffect(() => {
     const fetchICD = async () => {
       const { data, error } = await supabase.from('icd10').select('*');
-      if (error) console.error('Tanı kodları alınamadı:', error.message);
-      else setIcdList(data);
+      if (!error) setIcdList(data);
     };
     fetchICD();
   }, []);
@@ -95,11 +93,11 @@ export default function SGKEczaciAsistani() {
     <div className="min-h-screen bg-gray-50 p-6">
       <h1 className="text-2xl font-bold mb-4">SGK İlaç Sorgulama Paneli</h1>
       <div className="max-w-xl space-y-4 relative">
-        <div>
+        <div className="relative">
           <label className="block mb-1 font-medium">İlaç Adı / Barkod</label>
           <input value={ilac} onChange={(e) => setIlac(e.target.value)} placeholder="Parol / 869..." className="border p-2 w-full" />
           {ilacOneri.length > 0 && (
-            <ul className="border bg-white absolute z-10 w-full max-h-40 overflow-auto mt-1 rounded shadow">
+            <ul className="border bg-white absolute z-50 w-full max-h-40 overflow-auto mt-1 rounded shadow">
               {ilacOneri.map(i => (
                 <li
                   key={i.id}
@@ -119,7 +117,7 @@ export default function SGKEczaciAsistani() {
           <label className="block mb-1 font-medium">Tanı Kodu (ICD-10)</label>
           <input value={icd10} onChange={(e) => setIcd10(e.target.value)} placeholder="J06.9" className="border p-2 w-full" />
           {icdOneri.length > 0 && (
-            <ul className="border bg-white absolute z-10 w-full max-h-40 overflow-auto mt-1 rounded shadow">
+            <ul className="border bg-white absolute z-50 w-full max-h-40 overflow-auto mt-1 rounded shadow">
               {icdOneri.map(i => (
                 <li
                   key={i.kod}
