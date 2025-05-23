@@ -1,4 +1,4 @@
-// SGK Eczacı Asistanı – Otomatik İlaç ve Tanı Kod Tamamlama (DÜZENLENMİŞ)
+// SGK Eczacı Asistanı – Otomatik İlaç ve Tanı Kod Tamamlama (Güncellenmiş: sadece başlayanlar eşleşir)
 
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
@@ -39,7 +39,9 @@ export default function SGKEczaciAsistani() {
 
   useEffect(() => {
     if (ilac.length >= 2) {
-      const filtreli = ilaclar.filter(i => i.ilac_adi.toLowerCase().includes(ilac.toLowerCase()));
+      const filtreli = ilaclar.filter(i =>
+        i.ilac_adi.toLowerCase().trim().startsWith(ilac.toLowerCase().trim())
+      );
       setIlacOneri(filtreli);
     } else {
       setIlacOneri([]);
@@ -49,8 +51,8 @@ export default function SGKEczaciAsistani() {
   useEffect(() => {
     if (icd10.length >= 2) {
       const filtre = icdList.filter(i =>
-        i.kod.toLowerCase().includes(icd10.toLowerCase()) ||
-        i.aciklama.toLowerCase().includes(icd10.toLowerCase())
+        i.kod.toLowerCase().trim().startsWith(icd10.toLowerCase().trim()) ||
+        i.aciklama.toLowerCase().trim().startsWith(icd10.toLowerCase().trim())
       );
       setIcdOneri(filtre);
     } else {
