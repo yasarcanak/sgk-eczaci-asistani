@@ -1,19 +1,19 @@
-// SGK Eczacı Asistanı - Son Sürüm (Girişsiz, autocomplete sadece başlayanlarla)
-
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = 'https://jwdxnueyqwoqrshzuvrs.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // gizli anahtarınız
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // devamı sende var
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function SGKEczaciAsistani() {
   const [ilac, setIlac] = useState('');
   const [ilaclar, setIlaclar] = useState([]);
   const [ilacOneri, setIlacOneri] = useState([]);
+
   const [icd10, setIcd10] = useState('');
   const [icdList, setIcdList] = useState([]);
   const [icdOneri, setIcdOneri] = useState([]);
+
   const [rapor, setRapor] = useState('Raporlu');
   const [sonuc, setSonuc] = useState('');
 
@@ -70,11 +70,19 @@ export default function SGKEczaciAsistani() {
       <div className="max-w-xl space-y-4 relative">
         <div className="relative">
           <label className="block mb-1 font-medium">İlaç Adı / Barkod</label>
-          <input value={ilac} onChange={(e) => setIlac(e.target.value)} placeholder="Parol / 869..." className="border p-2 w-full" />
+          <input
+            value={ilac}
+            onChange={(e) => setIlac(e.target.value)}
+            placeholder="Parol / 869..."
+            className="border p-2 w-full"
+          />
           {ilacOneri.length > 0 && (
-            <ul className="border bg-white absolute z-10 w-full max-h-40 overflow-auto mt-1 rounded shadow">
+            <ul className="border bg-white absolute z-50 w-full max-h-40 overflow-auto mt-1 rounded shadow">
               {ilacOneri.map(i => (
-                <li key={i.id} onClick={() => { setIlac(i.ilac_adi); setIlacOneri([]); }} className="p-2 hover:bg-blue-100 cursor-pointer">
+                <li key={i.id} onClick={() => {
+                  setIlac(i.ilac_adi);
+                  setIlacOneri([]);
+                }} className="p-2 hover:bg-blue-100 cursor-pointer">
                   {i.ilac_adi}
                 </li>
               ))}
@@ -84,11 +92,19 @@ export default function SGKEczaciAsistani() {
 
         <div className="relative">
           <label className="block mb-1 font-medium">Tanı Kodu (ICD-10)</label>
-          <input value={icd10} onChange={(e) => setIcd10(e.target.value)} placeholder="J06.9" className="border p-2 w-full" />
+          <input
+            value={icd10}
+            onChange={(e) => setIcd10(e.target.value)}
+            placeholder="J06.9"
+            className="border p-2 w-full"
+          />
           {icdOneri.length > 0 && (
-            <ul className="border bg-white absolute z-10 w-full max-h-40 overflow-auto mt-1 rounded shadow">
+            <ul className="border bg-white absolute z-50 w-full max-h-40 overflow-auto mt-1 rounded shadow">
               {icdOneri.map(i => (
-                <li key={i.kod} onClick={() => { setIcd10(i.kod); setIcdOneri([]); }} className="p-2 hover:bg-blue-100 cursor-pointer">
+                <li key={i.kod} onClick={() => {
+                  setIcd10(i.kod);
+                  setIcdOneri([]);
+                }} className="p-2 hover:bg-blue-100 cursor-pointer">
                   {i.kod} - {i.aciklama}
                 </li>
               ))}
