@@ -70,7 +70,10 @@ export default function SGKEczaciAsistani() {
       setIcdOneri([]);
     }
   }, [icd10, icdList]);
-
+useEffect(() => {
+  console.log("İlaç listesi:", ilaclar);
+  console.log("ICD listesi:", icdList);
+}, [ilaclar, icdList]);
   // ✅ SGK sorgulama
   const sorgula = () => {
     if (ilac.toLowerCase().includes('parol') && icd10.toUpperCase() === 'J06.9' && rapor === 'Raporsuz') {
