@@ -1,52 +1,38 @@
+// SGK Eczacı Asistanı - Son Sürüm (Girişsiz, autocomplete sadece başlayanlarla)
+
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase bilgileri
 const supabaseUrl = 'https://jwdxnueyqwoqrshzuvrs.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3ZHhudWV5cXdvcXJzaHp1dnJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc4NDY5NzcsImV4cCI6MjA2MzQyMjk3N30.ymvB59gTCgNJdWfz82gYiebQImyKAG10cARNkFOsTqs';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // gizli anahtarınız
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function SGKEczaciAsistani() {
   const [ilac, setIlac] = useState('');
   const [ilaclar, setIlaclar] = useState([]);
   const [ilacOneri, setIlacOneri] = useState([]);
-
   const [icd10, setIcd10] = useState('');
   const [icdList, setIcdList] = useState([]);
   const [icdOneri, setIcdOneri] = useState([]);
-
   const [rapor, setRapor] = useState('Raporlu');
   const [sonuc, setSonuc] = useState('');
 
-  // ✅ İlaçları çek
   useEffect(() => {
     const fetchIlaclar = async () => {
       const { data, error } = await supabase.from('ilaclar').select('*');
-      if (error) {
-        console.error('İlaçlar alınamadı:', error.message);
-      } else {
-        console.log('İlaç verisi geldi:', data);
-        setIlaclar(data);
-      }
+      if (!error) setIlaclar(data);
     };
     fetchIlaclar();
   }, []);
 
-  // ✅ ICD kodlarını çek
   useEffect(() => {
     const fetchICD = async () => {
       const { data, error } = await supabase.from('icd10').select('*');
-      if (error) {
-        console.error('ICD kodları alınamadı:', error.message);
-      } else {
-        console.log('ICD verisi geldi:', data);
-        setIcdList(data);
-      }
+      if (!error) setIcdList(data);
     };
     fetchICD();
   }, []);
 
-  // ✅ İlaç öneri filtresi
   useEffect(() => {
     if (ilac.length >= 2) {
       const filtreli = ilaclar.filter(i =>
@@ -58,7 +44,6 @@ export default function SGKEczaciAsistani() {
     }
   }, [ilac, ilaclar]);
 
-  // ✅ ICD öneri filtresi
   useEffect(() => {
     if (icd10.length >= 2) {
       const filtre = icdList.filter(i =>
@@ -70,11 +55,7 @@ export default function SGKEczaciAsistani() {
       setIcdOneri([]);
     }
   }, [icd10, icdList]);
-useEffect(() => {
-  console.log("İlaç listesi:", ilaclar);
-  console.log("ICD listesi:", icdList);
-}, [ilaclar, icdList]);
-  // ✅ SGK sorgulama
+
   const sorgula = () => {
     if (ilac.toLowerCase().includes('parol') && icd10.toUpperCase() === 'J06.9' && rapor === 'Raporsuz') {
       setSonuc('✅ SGK tarafından karşılanır.');
@@ -89,19 +70,11 @@ useEffect(() => {
       <div className="max-w-xl space-y-4 relative">
         <div className="relative">
           <label className="block mb-1 font-medium">İlaç Adı / Barkod</label>
-          <input
-            value={ilac}
-            onChange={(e) => setIlac(e.target.value)}
-            placeholder="Parol / 869..."
-            className="border p-2 w-full"
-          />
+          <input value={ilac} onChange={(e) => setIlac(e.target.value)} placeholder="Parol / 869..." className="border p-2 w-full" />
           {ilacOneri.length > 0 && (
             <ul className="border bg-white absolute z-10 w-full max-h-40 overflow-auto mt-1 rounded shadow">
               {ilacOneri.map(i => (
-                <li key={i.id} onClick={() => {
-                  setIlac(i.ilac_adi);
-                  setIlacOneri([]);
-                }} className="p-2 hover:bg-blue-100 cursor-pointer">
+                <li key={i.id} onClick={() => { setIlac(i.ilac_adi); setIlacOneri([]); }} className="p-2 hover:bg-blue-100 cursor-pointer">
                   {i.ilac_adi}
                 </li>
               ))}
@@ -111,19 +84,11 @@ useEffect(() => {
 
         <div className="relative">
           <label className="block mb-1 font-medium">Tanı Kodu (ICD-10)</label>
-          <input
-            value={icd10}
-            onChange={(e) => setIcd10(e.target.value)}
-            placeholder="J06.9"
-            className="border p-2 w-full"
-          />
+          <input value={icd10} onChange={(e) => setIcd10(e.target.value)} placeholder="J06.9" className="border p-2 w-full" />
           {icdOneri.length > 0 && (
             <ul className="border bg-white absolute z-10 w-full max-h-40 overflow-auto mt-1 rounded shadow">
               {icdOneri.map(i => (
-                <li key={i.kod} onClick={() => {
-                  setIcd10(i.kod);
-                  setIcdOneri([]);
-                }} className="p-2 hover:bg-blue-100 cursor-pointer">
+                <li key={i.kod} onClick={() => { setIcd10(i.kod); setIcdOneri([]); }} className="p-2 hover:bg-blue-100 cursor-pointer">
                   {i.kod} - {i.aciklama}
                 </li>
               ))}
