@@ -1,3 +1,5 @@
+// SGK Eczacı Asistanı – Otomatik İlaç ve Tanı Kod Tamamlama
+
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
@@ -21,25 +23,23 @@ export default function SGKEczaciAsistani() {
 
   useEffect(() => {
     const fetchIlaclar = async () => {
-      const { data } = await supabase.from('ilaclar').select('*');
-      setIlaclar(data || []);
+      const { data, error } = await supabase.from('ilaclar').select('*');
+      if (!error) setIlaclar(data);
     };
     fetchIlaclar();
   }, []);
 
   useEffect(() => {
     const fetchICD = async () => {
-      const { data } = await supabase.from('icd10').select('*');
-      setIcdList(data || []);
+      const { data, error } = await supabase.from('icd10').select('*');
+      if (!error) setIcdList(data);
     };
     fetchICD();
   }, []);
 
   useEffect(() => {
     if (ilac.length >= 2) {
-      const filtreli = ilaclar.filter(i =>
-        i.ilac_adi.toLowerCase().trim().startsWith(ilac.toLowerCase().trim())
-      );
+      const filtreli = ilaclar.filter(i => i.ilac_adi.toLowerCase().startsWith(ilac.toLowerCase()));
       setIlacOneri(filtreli);
     } else {
       setIlacOneri([]);
@@ -49,7 +49,7 @@ export default function SGKEczaciAsistani() {
   useEffect(() => {
     if (icd10.length >= 2) {
       const filtre = icdList.filter(i =>
-        i.kod.toLowerCase().startsWith(icd10.toLowerCase()) ||
+        i.kod.toLowerCase().includes(icd10.toLowerCase()) ||
         i.aciklama.toLowerCase().includes(icd10.toLowerCase())
       );
       setIcdOneri(filtre);
@@ -93,7 +93,7 @@ export default function SGKEczaciAsistani() {
     <div className="min-h-screen bg-gray-50 p-6">
       <h1 className="text-2xl font-bold mb-4">SGK İlaç Sorgulama Paneli</h1>
       <div className="max-w-xl space-y-4 relative">
-        <div>
+        <div className="relative">
           <label className="block mb-1 font-medium">İlaç Adı / Barkod</label>
           <input value={ilac} onChange={(e) => setIlac(e.target.value)} placeholder="Parol / 869..." className="border p-2 w-full" />
           {ilacOneri.length > 0 && (
