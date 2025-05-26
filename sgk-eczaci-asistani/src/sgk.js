@@ -1,36 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://jwdxnueyqwoqrshzuvrs.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'; // devamı sende var
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(
+  'https://jwdxnueyqwoqrshzuvrs.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3ZHhudWV5cXdvcXJzaHp1dnJzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc4NDY5NzcsImV4cCI6MjA2MzQyMjk3N30.ymvB59gTCgNJdWfz82gYiebQImyKAG10cARNkFOsTqs'
+);
 
 export default function SGKEczaciAsistani() {
   const [ilac, setIlac] = useState('');
   const [ilaclar, setIlaclar] = useState([]);
   const [ilacOneri, setIlacOneri] = useState([]);
-
   const [icd10, setIcd10] = useState('');
   const [icdList, setIcdList] = useState([]);
   const [icdOneri, setIcdOneri] = useState([]);
-
   const [rapor, setRapor] = useState('Raporlu');
   const [sonuc, setSonuc] = useState('');
 
   useEffect(() => {
     const fetchIlaclar = async () => {
-      const { data, error } = await supabase.from('ilaclar').select('*');
-      if (!error) setIlaclar(data);
+      const { data } = await supabase.from('ilaclar').select('*');
+      setIlaclar(data || []);
     };
     fetchIlaclar();
-  }, []);
 
-  useEffect(() => {
-    const fetchICD = async () => {
-      const { data, error } = await supabase.from('icd10').select('*');
-      if (!error) setIcdList(data);
+    const fetchIcd = async () => {
+      const { data } = await supabase.from('icd10').select('*');
+      setIcdList(data || []);
     };
-    fetchICD();
+    fetchIcd();
   }, []);
 
   useEffect(() => {
@@ -79,10 +76,14 @@ export default function SGKEczaciAsistani() {
           {ilacOneri.length > 0 && (
             <ul className="border bg-white absolute z-50 w-full max-h-40 overflow-auto mt-1 rounded shadow">
               {ilacOneri.map(i => (
-                <li key={i.id} onClick={() => {
-                  setIlac(i.ilac_adi);
-                  setIlacOneri([]);
-                }} className="p-2 hover:bg-blue-100 cursor-pointer">
+                <li
+                  key={i.id}
+                  onClick={() => {
+                    setIlac(i.ilac_adi);
+                    setIlacOneri([]);
+                  }}
+                  className="p-2 hover:bg-blue-100 cursor-pointer"
+                >
                   {i.ilac_adi}
                 </li>
               ))}
@@ -101,10 +102,14 @@ export default function SGKEczaciAsistani() {
           {icdOneri.length > 0 && (
             <ul className="border bg-white absolute z-50 w-full max-h-40 overflow-auto mt-1 rounded shadow">
               {icdOneri.map(i => (
-                <li key={i.kod} onClick={() => {
-                  setIcd10(i.kod);
-                  setIcdOneri([]);
-                }} className="p-2 hover:bg-blue-100 cursor-pointer">
+                <li
+                  key={i.kod}
+                  onClick={() => {
+                    setIcd10(i.kod);
+                    setIcdOneri([]);
+                  }}
+                  className="p-2 hover:bg-blue-100 cursor-pointer"
+                >
                   {i.kod} - {i.aciklama}
                 </li>
               ))}
@@ -114,13 +119,19 @@ export default function SGKEczaciAsistani() {
 
         <div>
           <label className="block mb-1 font-medium">Rapor Durumu</label>
-          <select value={rapor} onChange={(e) => setRapor(e.target.value)} className="border p-2 w-full">
+          <select
+            value={rapor}
+            onChange={(e) => setRapor(e.target.value)}
+            className="border p-2 w-full"
+          >
             <option>Raporlu</option>
             <option>Raporsuz</option>
           </select>
         </div>
 
-        <button onClick={sorgula} className="bg-green-600 text-white w-full p-2 rounded">Sorgula</button>
+        <button onClick={sorgula} className="bg-green-600 text-white w-full p-2 rounded">
+          Sorgula
+        </button>
 
         {sonuc && (
           <div className="bg-white p-4 rounded shadow">
