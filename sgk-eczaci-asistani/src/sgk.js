@@ -22,12 +22,18 @@ export default function SGKEczaciAsistani() {
   useEffect(() => {
     const fetchIlaclar = async () => {
       const { data, error } = await supabase.from('ilaclar').select('*');
+	    console.log("İlaç verisi geldi mi?:", data);
       if (!error) setIlaclar(data);
     };
     const fetchICD = async () => {
-      const { data, error } = await supabase.from('icd10').select('*');
-      if (!error) setIcdList(data);
-    };
+  const { data, error } = await supabase.from('icd10').select('*');
+  if (error) {
+    console.error('ICD verisi alınamadı:', error.message);
+  } else {
+    console.log("ICD verisi geldi mi?:", data); // 👈 Burası önemli
+    setIcdList(data);
+  }
+};
     fetchIlaclar();
     fetchICD();
   }, []);
